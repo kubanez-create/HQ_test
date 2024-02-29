@@ -1,65 +1,44 @@
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, TestCase
+from rest_framework import status
+from rest_framework.test import APIRequestFactory, force_authenticate
+
+from language_school.products.views import ProductViewSet
 
 User = get_user_model()
 
 
-class ClientsViewSetTests(TestCase):
+class ProductTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.specialist = User.objects.create_user(
-            email="specialist@test.com",
+        cls.tutor = User.objects.create_user(
+            username="tutor",
             password="testpassword",
             is_superuser=True,
-            is_specialist=True,
-            is_staff=True
         )
         cls.client_user = User.objects.create_user(
-            first_name="user_name",
-            last_name="user_surname",
-            email="client@test.com",
+            username="user_name",
             password="testpassword",
         )
 
     def setUp(self):
         self.client = Client()
-        self.client.force_login(ClientsViewSetTests.specialist)
-        self.factory = RequestFactory()
+        self.client.force_login(ProductTest.tutor)
+        self.factory = APIRequestFactory()
         cache.clear()
 
     def test_api_client_create(self):
         request = self.factory.post(
-            "/api/clients/",
+            "/api/product/grant",
             data={
-                "user": {
-                    "first_name": "string",
-                    "last_name": "string",
-                    "middle_name": "string",
-                    "role": "0",
-                    "email": "user@exa.com",
-                    "phone_number": ")74)51815(28+)+",
-                    "dob": "2023-10-18",
-                    "gender": "0",
-                    "params": {
-                        "weight": 0,
-                        "height": 0,
-                        "waist_size": 0
-                    },
-                    "capture": "string"
-                },
-                "diseases": "string",
-                "exp_diets": "string",
-                "exp_trainings": "string",
-                "bad_habits": "string",
-                "notes": "string",
-                "food_preferences": "string"
+                "user": 1,
+                "product": 1
             },
             format="json",
         )
-        view = ClientsViewSet.as_view({"get": "detail", "post": "create"})
-        force_authenticate(request, user=ClientsViewSetTests.specialist)
+        view = ProductViewSet.as_view({"get": "detail", "post": "create"})
+        force_authenticate(request, user=ProductTest.tutor)
         response = view(request)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(SpecialistClient.objects.count(), 2)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

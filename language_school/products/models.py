@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, URLValidator
 from django.db import models
 
-from language_school.products.validators import validate_start_time
+from .validators import validate_start_time
 
 
 User = get_user_model()
