@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import viewsets, status
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-
+from .mixins import ListViewSet
 from .serializers import ProductSerializer
 from api.exceptions import (
     AllGroupsFullError,
@@ -29,18 +29,19 @@ def distribute_students(objects: list, target: CustomUser, limit: int) -> None:
     counter = 0
     length = objects.count()
     while counter + 1 <= length:
+        current_group = objects[counter]
         # if a current group is full notch up the counter
-        if objects[counter].students.count() == limit:
+        if current_group.students.count() == limit:
             counter += 1
             continue
         # if the current group is last assign a student to it
         if counter + 1 == length:
-            objects[counter].students.add(target)
+            current_group.students.add(target)
             return
         # if number of students in the current group higher than in the
         # next one notch up the counter
         if (
-            objects[counter].students.count() -
+            current_group.students.count() -
             objects[counter + 1].students.count() > 0
         ):
             counter += 1
@@ -48,13 +49,14 @@ def distribute_students(objects: list, target: CustomUser, limit: int) -> None:
         # if all the previous checks failed we can safely assign a student
         # to a current group
         else:
-            objects[counter].students.add(target)
+            current_group.students.add(target)
             return
     raise AllGroupsFullError(
         "There is not any place left in groups for a new student"
     )
 
-class ProductViewSet(viewsets.ModelViewSet):
+
+class ProductViewSet(ListViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     http_method_names = ('get', 'post')
