@@ -27,16 +27,26 @@ def distribute_students(objects: list, target: CustomUser, limit: int) -> None:
         limit (int): maximum allowed number of students in a group
     """
     counter = 0
-    while counter <= objects.count():
+    length = objects.count()
+    while counter + 1 <= length:
+        # if a current group is full notch up the counter
         if objects[counter].students.count() == limit:
             counter += 1
             continue
+        # if the current group is last assign a student to it
+        if counter + 1 == length:
+            objects[counter].students.add(target)
+            return
+        # if number of students in the current group higher than in the
+        # next one notch up the counter
         if (
             objects[counter].students.count() -
             objects[counter + 1].students.count() > 0
         ):
             counter += 1
             continue
+        # if all the previous checks failed we can safely assign a student
+        # to a current group
         else:
             objects[counter].students.add(target)
             return
