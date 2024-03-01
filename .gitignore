@@ -3,3 +3,6 @@ venv/
 .trunk/
 .trunk
 .env
+*.sqlite3
+__pycache__/
+.vscode/
