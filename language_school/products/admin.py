@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Group, Lesson, Product
+
+admin.site.register(Group)
+admin.site.register(Lesson)
+admin.site.register(Product)

@@ -43,7 +43,7 @@ class Product(models.Model):
     participants = models.ManyToManyField(
         User,
         verbose_name="Students",
-        related_name="participants",
+        related_name="courses",
         blank=True,
     )
 
@@ -85,6 +85,12 @@ class Group(models.Model):
         verbose_name="Product",
         on_delete=models.CASCADE,
         related_name="groups"
+    )
+    students = models.ManyToManyField(
+        User,
+        verbose_name="Students",
+        related_name="classes",
+        blank=True,
     )
 
     def __str__(self) -> str:
