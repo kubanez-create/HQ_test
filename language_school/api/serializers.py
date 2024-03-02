@@ -5,7 +5,7 @@ from products.models import Lesson, Product
 
 class ProductSerializer(serializers.ModelSerializer):
     """Product serializer"""
-    lessons = serializers.StringRelatedField(many=True, read_only=True)
+    lessons_count = serializers.SerializerMethodField()
     author = serializers.StringRelatedField(read_only=True)
 
     class Meta:
@@ -15,8 +15,12 @@ class ProductSerializer(serializers.ModelSerializer):
             "start_time",
             "cost",
             "author",
-            "lessons",
+            "lessons_count",
         )
+
+    def get_lessons_count(self, obj):
+        count = obj.lessons.count()
+        return count
 
 class LessonSerializer(serializers.ModelSerializer):
 
@@ -31,6 +35,16 @@ class RetrieveSerializer(ProductSerializer):
     With corresponding lessons.
     """
     lessons = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = (
+            "name",
+            "start_time",
+            "cost",
+            "author",
+            "lessons",
+        )
 
     @extend_schema_field(field=LessonSerializer(many=True))
     def get_lessons(self, obj):

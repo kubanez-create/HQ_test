@@ -61,6 +61,18 @@ class ProductViewSet(ReadOrListOnlyViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
 
+    def list(self, request, *args, **kwargs):
+        """List products the user have not bought yet."""
+        queryset = self.filter_queryset(
+            self.get_queryset()
+        ).exclude(participants__id=request.user.id)
+        serializer = self.get_serializer(
+            queryset,
+            many=True,
+            context={"request": request},
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def retrieve(self, request, pk=None):
         """
         Retrieve a product instance along its associated lessons.

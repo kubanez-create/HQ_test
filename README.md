@@ -53,6 +53,9 @@ content-type: application/json
 продукту:
 `GET http://127.0.0.1:8000/api/products/1/`
 
+Автоматическая документация доступна по адресу
+`http://127.0.0.1:8000/api/schema/swagger-ui/`
+
 ## Автор
 
 - [Костенко Станислав](https://github.com/kubanez-create) 
