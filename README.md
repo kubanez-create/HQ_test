@@ -40,8 +40,8 @@ python3 manage.py runserver
 ## Примеры запросов к API
 
  - Предоставить пользователю с id = 1 доступ к продукту с id = 2:
-```json
-POST   http://127.0.0.1:8000/api/products/2/grant/
+```python
+POST http://127.0.0.1:8000/api/products/2/grant/
 content-type: application/json
 
 {
