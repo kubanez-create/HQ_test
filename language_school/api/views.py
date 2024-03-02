@@ -11,7 +11,7 @@ from api.exceptions import (
     AllGroupsFullError,
     EmptyGroupListError,
     ObjectNotFoundError,
-    UserAlreadyInProductError
+    UserAlreadyInProductError,
 )
 from products.models import Product
 from users.models import CustomUser
@@ -43,7 +43,7 @@ def distribute_students(objects: list, target: CustomUser, limit: int) -> None:
         # next one notch up the counter
         if (
             current_group.students.count() -
-            objects[counter + 1].students.count() > 0
+             objects[counter + 1].students.count() > 0
         ):
             counter += 1
             continue
@@ -54,7 +54,7 @@ def distribute_students(objects: list, target: CustomUser, limit: int) -> None:
             return
     raise AllGroupsFullError(
         "There is not any place left in groups for a new student"
-    )
+        )
 
 
 class ProductViewSet(ReadOrListOnlyViewSet):
@@ -63,14 +63,14 @@ class ProductViewSet(ReadOrListOnlyViewSet):
 
     def retrieve(self, request, pk=None):
         """
-        Retrieve a product instance along the associated lessons.
+        Retrieve a product instance along its associated lessons.
         """
         product = get_object_or_404(Product, id=pk)
         serializer = RetrieveSerializer(product, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"])
-    def grant(self, request, pk=None) -> Response:
+    def grant(self, request, pk=None):
         """Grant access and distribute a user between groups.
 
         Args:
