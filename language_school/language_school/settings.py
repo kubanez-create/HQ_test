@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'django_filters',
     'drf_spectacular',
     'api.apps.ApiConfig',
     'users.apps.UsersConfig',
@@ -110,6 +109,6 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0',
     'SERVE_INCLUDE_SCHEMA': False,
     "SWAGGER_UI_SETTINGS": {
-        "filter": True,
+        "filter": False,
     },
 }

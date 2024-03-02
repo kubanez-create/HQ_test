@@ -53,7 +53,7 @@ def distribute_students(objects: list, target: CustomUser, limit: int) -> None:
             current_group.students.add(target)
             return
     raise AllGroupsFullError(
-        "There is not any place left in groups for a new student"
+        "There is not any space in groups left for a new student"
         )
 
 
