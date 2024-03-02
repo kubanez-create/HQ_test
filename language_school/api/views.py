@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .mixins import ListViewSet
-from .serializers import ProductSerializer
+from .mixins import ReadOrListOnlyViewSet
+from .serializers import ProductSerializer, RetrieveSerializer
 from api.exceptions import (
     AllGroupsFullError,
     EmptyGroupListError,
@@ -56,10 +57,17 @@ def distribute_students(objects: list, target: CustomUser, limit: int) -> None:
     )
 
 
-class ProductViewSet(ListViewSet):
+class ProductViewSet(ReadOrListOnlyViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-    http_method_names = ('get', 'post')
+
+    def retrieve(self, request, pk=None):
+        """
+        Retrieve a product instance along the associated lessons.
+        """
+        product = get_object_or_404(Product, id=pk)
+        serializer = RetrieveSerializer(product, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"])
     def grant(self, request, pk=None) -> Response:

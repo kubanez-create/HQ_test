@@ -1,4 +1,6 @@
 from rest_framework import mixins, viewsets
 
-class ListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class ReadOrListOnlyViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
     pass
